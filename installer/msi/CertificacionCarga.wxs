@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package
+      Name="Certificación de Productos"
+      Manufacturer="Cencosud"
+      Version="$(AppVersion)"
+      UpgradeCode="{74E89D1D-C236-41A7-B47A-4C9BAD4CED07}"
+      Language="3082"
+      Scope="perUser"
+      InstallerVersion="500">
+
+    <SummaryInformation
+        Description="Instalador de Seguimiento de Certificación de Productos"
+        Manufacturer="Cencosud" />
+    <MajorUpgrade
+        DowngradeErrorMessage="Ya existe una versión más reciente de [ProductName]." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <Icon Id="ApplicationIcon" SourceFile="$(IconPath)" />
+    <Property Id="ARPPRODUCTICON" Value="ApplicationIcon" />
+    <Property Id="ARPNOREPAIR" Value="1" />
+
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="LocalProgramsFolder" Name="Programs">
+        <Directory Id="InstallVendorFolder" Name="Cencosud">
+          <Directory Id="INSTALLFOLDER" Name="certificacion_carga" />
+        </Directory>
+      </Directory>
+      <Directory Id="DataVendorFolder" Name="Cencosud">
+        <Directory Id="ApplicationDataDirectory" Name="CertificacionCarga" />
+      </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ProgramMenuVendorFolder" Name="Cencosud" />
+    </StandardDirectory>
+    <StandardDirectory Id="DesktopFolder" />
+
+    <Feature Id="MainFeature" Title="Certificación de Productos" Level="1">
+      <ComponentGroupRef Id="ApplicationComponents" />
+    </Feature>
+
+    <ComponentGroup Id="ApplicationComponents">
+      <Component
+          Id="MainExecutableComponent"
+          Directory="INSTALLFOLDER"
+          Guid="{E5CCE333-3FB0-4383-B4D6-698434C57F6E}">
+        <File
+            Id="CertificacionExecutable"
+            Source="$(AppSourceDir)\certificacion_carga.exe"
+            KeyPath="yes">
+          <Shortcut
+              Id="StartMenuShortcut"
+              Directory="ProgramMenuVendorFolder"
+              Name="Certificación de Productos"
+              Description="Seguimiento de certificación de productos"
+              WorkingDirectory="INSTALLFOLDER"
+              Icon="ApplicationIcon"
+              Advertise="no" />
+          <Shortcut
+              Id="DesktopShortcut"
+              Directory="DesktopFolder"
+              Name="Certificación de Productos"
+              Description="Seguimiento de certificación de productos"
+              WorkingDirectory="INSTALLFOLDER"
+              Icon="ApplicationIcon"
+              Advertise="no" />
+        </File>
+        <RemoveFolder
+            Id="RemoveProgramMenuVendorFolder"
+            Directory="ProgramMenuVendorFolder"
+            On="uninstall" />
+      </Component>
+
+      <Component
+          Id="ConfigurationProvisionComponent"
+          Directory="INSTALLFOLDER"
+          Guid="{81296F2D-EC07-4F23-90EF-8881AF2F2B8B}">
+        <File
+            Id="BootstrapConfig"
+            Source="$(ConfigPath)"
+            Name="config.install.json"
+            Hidden="yes"
+            KeyPath="no" />
+        <RegistryValue
+            Root="HKCU"
+            Key="Software\Cencosud\CertificacionCarga"
+            Name="ConfigurationProvisioned"
+            Type="string"
+            Value="$(AppVersion)"
+            KeyPath="yes" />
+        <RemoveFile
+            Id="RemoveProtectedConfig"
+            Directory="ApplicationDataDirectory"
+            Name="config.dat"
+            On="uninstall" />
+        <RemoveFile
+            Id="RemoveTemporaryProtectedConfig"
+            Directory="ApplicationDataDirectory"
+            Name="config.dat.tmp"
+            On="uninstall" />
+        <RemoveFolder
+            Id="RemoveApplicationDataDirectory"
+            Directory="ApplicationDataDirectory"
+            On="uninstall" />
+      </Component>
+
+      <Files Include="$(AppSourceDir)\**" Directory="INSTALLFOLDER">
+        <Exclude Files="$(AppSourceDir)\certificacion_carga.exe" />
+      </Files>
+    </ComponentGroup>
+
+    <CustomAction
+        Id="ProvisionProtectedConfig"
+        FileRef="CertificacionExecutable"
+        ExeCommand="--provision-config-and-delete &quot;[#BootstrapConfig]&quot;"
+        Execute="deferred"
+        Impersonate="yes"
+        Return="check"
+        HideTarget="yes" />
+
+    <InstallExecuteSequence>
+      <Custom
+          Action="ProvisionProtectedConfig"
+          After="InstallFiles"
+          Condition="NOT (REMOVE = &quot;ALL&quot;)" />
+    </InstallExecuteSequence>
+  </Package>
+</Wix>

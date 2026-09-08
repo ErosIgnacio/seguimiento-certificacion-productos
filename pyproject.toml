@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=70"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "certificacion-carga"
+dynamic = ["version"]
+description = "Seguimiento y sincronización de certificación de productos importados"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "customtkinter>=5.2,<6",
+    "PyMySQL>=1.1,<2",
+]
+
+[project.gui-scripts]
+certificacion-carga = "scripts.iniciar_interfaz:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "certificacion.version.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["certificacion*", "scripts*"]
+exclude = ["tests*"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"

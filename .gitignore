@@ -1,0 +1,40 @@
+# Configuración local con credenciales
+config.json
+config.*.json
+!config.example.json
+.env
+.env.*
+config.dat
+config.dat.tmp
+
+# Archivos temporales de Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Entornos y editores locales
+.venv/
+.venv-*/
+venv/
+.idea/
+.vscode/
+
+# Artefactos reproducibles de compilación
+build/
+dist/
+installer/output/
+*.msi
+*.zip
+*.sha256
+*.log
+
+# Datos operacionales y reportes que no deben publicarse
+Certificacion.csv
+Certificacion*.csv
+reportes/
+docs/DIAGNOSTICO_ORIGEN_*.md
+docs/DECISIONES_CARGA_HISTORICA.md

@@ -1,0 +1,11 @@
+{
+  "host": "mysql.example.internal",
+  "user": "REEMPLAZAR_USUARIO",
+  "password": "REEMPLAZAR_PASSWORD",
+  "database": "REEMPLAZAR_BASE_DE_DATOS",
+  "port": 3306,
+  "charset": "utf8mb4",
+  "connect_timeout": 15,
+  "read_timeout": 120,
+  "write_timeout": 120
+}
